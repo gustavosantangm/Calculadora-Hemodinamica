@@ -142,7 +142,6 @@
       padding: 16px;
       border-radius: 10px;
       border: 1px solid #e2e8f0;
-      transition: y 0.2s;
     }
     .metric-card strong {
       color: #0f172a;
@@ -403,13 +402,12 @@
         return;
       }
 
-      // Injeta o container do gráfico se DO2i e VO2i forem calculados
       let chartHtml = "";
       if (!isNaN(do2i) && !isNaN(vo2i)) {
         chartHtml = `
           <div class="chart-container">
-            <h3 style="color: #1e3a8a; font-size: 15px; margin-top:0; margin-bottom:15px; text-align:center; font-weight:700; uppercase; letter-spacing:0.5px;">Gráfico de Dispersão Fisiológica DO₂i vs VO₂i</h3>
-            <div style="position: relative; width: 100%; max-height: 320px; margin: 0 auto;">
+            <h3 style="color: #1e3a8a; font-size: 15px; margin-top:0; margin-bottom:15px; text-align:center; font-weight:700; text-transform: uppercase; letter-spacing:0.5px;">Gráfico de Dispersão Fisiológica DO₂i vs VO₂i</h3>
+            <div style="position: relative; width: 100%; min-height: 300px; height: 320px; margin: 0 auto;">
               <canvas id="do2vo2Chart"></canvas>
             </div>
           </div>
@@ -462,15 +460,15 @@
           algoritmoHtml += `• <strong>SvO₂/ScvO₂ Alvo Atingida (≥ 70%):</strong> Saturação venosa global adequada; prosseguir com o rastreamento de distúrbios microcirculatórios ou disóxia regional oculta.<br>`;
           
           if (!isNaN(gapco2)) {
-            algoritmoHtml += `• ΔPCO₂ (Gap de CO₂): ${gapco2} mmHg.<br>`;
+            algoritmoHtml += `• Gap de CO₂: ${gapco2} mmHg.<br>`;
             if (gapco2 < 6) {
               algoritmoHtml += `👉 <strong>Direcionamento:</strong> O Gap de CO₂ absoluto está normal (&lt; 6 mmHg). <strong>Não há previsão de benefício hemodinâmico com o incremento isolado do Débito Cardíaco.</strong><br>`;
               
               if (!isNaN(rq)) {
                 if (rq >= 1.4) {
-                  algoritmoHtml += `👉 <strong>Nota Importante:</strong> Apesar do Gap absoluto normal, a relação metabólica ΔPCO₂/C(a-v)O₂ encontra-se elevada (≥ 1.4), sugerindo hipóxia celular/anaerobiose oculta. Nesses cenários específicos, <strong>pode-se considerar a otimização individualizada do Débito Cardíaco</strong> (testar fluidos ou inotrópicos).<br>`;
+                  algoritmoHtml += `👉 <strong>Nota Importante:</strong> Apesar do Gap absoluto normal, o Quociente Respiratório encontra-se elevado (≥ 1.4), sugerindo hipóxia celular/anaerobiose oculta. Nesses cenários específicos, <strong>pode-se considerar a otimização individualizada do Débito Cardíaco</strong> (testar fluidos ou inotrópicos).<br>`;
                 } else {
-                  algoritmoHtml += `👉 <strong>Conduta Recomendada:</strong> Relação metabólica ΔPCO₂/C(a-v)O₂ adequada (&lt; 1.4). Macro e microcirculação aparentam estabilidade. <strong>Considerar busca ativa por causas não-circulatórias de hiperlactatemia</strong> (ex: disfunção de clareamento hepático, causas farmacológicas, ou efeito citopático/adrenérgico).<br>`;
+                  algoritmoHtml += `👉 <strong>Conduta Recomendada:</strong> Quociente Respiratório adequado (&lt; 1.4). Macro e microcirculação aparentam estabilidade. <strong>Considerar busca ativa por causas não-circulatórias de hiperlactatemia</strong> (ex: disfunção de clareamento hepático, causas farmacológicas, ou efeito citopático/adrenérgico).<br>`;
                 }
               }
             } else {
@@ -478,12 +476,12 @@
             }
           } else if (!isNaN(rq)) {
             if (rq >= 1.4) {
-              algoritmoHtml += `👉 <strong>Conduta Recomendada:</strong> Relação ΔPCO₂/C(a-v)O₂ elevada (≥ 1.4) adverte para disóxia latente. <strong>Considerar otimização do Débito Cardíaco</strong> (fluidos ou suporte adrenérgico de contratilidade).<br>`;
+              algoritmoHtml += `👉 <strong>Conduta Recomendada:</strong> Quociente Respiratório elevado (≥ 1.4) adverte para disóxia latente. <strong>Considerar otimização do Débito Cardíaco</strong> (fluidos ou suporte adrenérgico de contratilidade).<br>`;
             } else {
-              algoritmoHtml += `👉 <strong>Conduta Recomendada:</strong> Relação metabólica normal. <strong>Direcionar investigação para etiologias metabólicas ou hepáticas fora do eixo macrocirculatório.</strong><br>`;
+              algoritmoHtml += `👉 <strong>Conduta Recomendada:</strong> Quociente Respiratório adequado. <strong>Direcionar investigação para etiologias metabólicas ou hepáticas fora do eixo macrocirculatório.</strong><br>`;
             }
           } else {
-            algoritmoHtml += `👉 <em>Nota: Insira o valor do GAP CO₂ (ΔPCO₂) para ativar o detalhamento exato da árvore de decisão do algoritmo (Limiares de 6 mmHg ou relação de 1.4).</em><br>`;
+            algoritmoHtml += `👉 <em>Nota: Insira o valor do Gap de CO₂ para ativar o detalhamento exato da árvore de decisão do algoritmo (Limiares de 6 mmHg ou relação de 1.4).</em><br>`;
           }
         }
         algoritmoHtml += `</div>`;
@@ -502,7 +500,6 @@
       `;
       document.getElementById('resultado').style.display = "block";
 
-      // Constrói o gráfico se os dados indexados existirem
       if (!isNaN(do2i) && !isNaN(vo2i)) {
         renderizarGraficoDo2Vo2(do2i, vo2i);
       }
@@ -514,8 +511,8 @@
       }
 
       const ctx = document.getElementById('do2vo2Chart').getContext('2d');
-      const do2Critico = 330; // Limiar clássico da inflexão fisiológica (ml/min/m²)
-      const vo2Plato = 130;   // Consumo basal médio no platô (ml/min/m²)
+      const do2Critico = 330; 
+      const vo2Plato = 130;   
 
       chartInstance = new Chart(ctx, {
         type: 'scatter',
@@ -548,7 +545,7 @@
               pointRadius: 7,
               pointHoverRadius: 9,
               borderColor: 'rgba(239, 68, 68, 0.4)',
-              borderWidth: 6, // Efeito sutil de brilho/alvo ao redor do ponto vermelho
+              borderWidth: 6, 
               showLine: false,
               order: 1
             }
@@ -557,6 +554,14 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          layout: {
+            padding: {
+              left: 15,   
+              right: 20,
+              top: 10,
+              bottom: 10
+            }
+          },
           plugins: {
             legend: {
               position: 'top',
@@ -580,7 +585,7 @@
             y: {
               min: 0,
               max: 250,
-              title: { display: true, text: 'VO₂i (Consumo de O₂ Indexado - mL/min/m²)', color: '#1e293b', font: { size: 11, weight: '700' } },
+              title: { display: true, text: 'VO₂i (Consumo de O₂ - mL/min/m²)', color: '#1e293b', font: { size: 11, weight: '700' } },
               grid: { color: '#f1f5f9' },
               ticks: { color: '#64748b', font: { size: 10 } }
             }
