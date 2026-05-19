@@ -466,7 +466,7 @@
               
               if (!isNaN(rq)) {
                 if (rq >= 1.4) {
-                  algoritmoHtml += `👉 <strong>Nota Importante:</strong> Apesar do Gap absoluto normal, o Quociente Respiratório encontra-se elevado (≥ 1.4), sugerindo hipóxia celular/anaerobiose oculta. Nesses cenários específicos, <strong>pode-se considerar a otimização individualizada do Débito Cardíaco</strong> (testar fluidos ou inotrópicos).<br>`;
+                  algoritmoHtml += `👉 <strong>Nota Importante:</strong> Apesar do Gap absoluto normal, o Quociente Respiratório encontra-se elevado (≥ 1.4), sugerindo hipóxia celular/anaerobiose oculta. Nesses cenários específicos, <strong>pode-se considerare a otimização individualizada do Débito Cardíaco</strong> (testar fluidos ou inotrópicos).<br>`;
                 } else {
                   algoritmoHtml += `👉 <strong>Conduta Recomendada:</strong> Quociente Respiratório adequado (&lt; 1.4). Macro e microcirculação aparentam estabilidade. <strong>Considerar busca ativa por causas não-circulatórias de hiperlactatemia</strong> (ex: disfunção de clareamento hepático, causas farmacológicas, ou efeito citopático/adrenérgico).<br>`;
                 }
@@ -519,14 +519,14 @@
         data: {
           datasets: [
             {
-              label: 'Fase Dependente (Patológica)',
+              label: 'Curva Fisiológica de Referência',
               type: 'line',
               data: [{ x: 0, y: 0 }, { x: do2Critico, y: vo2Plato }],
               borderColor: '#1e3a8a',
               borderWidth: 3,
               showLine: true,
               pointRadius: 0,
-              order: 2
+              order: 3
             },
             {
               label: 'Fase Independente (Platô)',
@@ -536,7 +536,32 @@
               borderWidth: 3,
               showLine: true,
               pointRadius: 0,
-              order: 2
+              order: 3,
+              plugins: { legend: { display: false } }
+            },
+            {
+              label: 'Projeção DO₂i',
+              type: 'line',
+              data: [{ x: do2i, y: 0 }, { x: do2i, y: vo2i }],
+              borderColor: '#94a3b8',
+              borderWidth: 1.5,
+              borderDash: [5, 5],
+              showLine: true,
+              pointRadius: 0,
+              order: 2,
+              plugins: { legend: { display: false } }
+            },
+            {
+              label: 'Projeção VO₂i',
+              type: 'line',
+              data: [{ x: 0, y: vo2i }, { x: do2i, y: vo2i }],
+              borderColor: '#94a3b8',
+              borderWidth: 1.5,
+              borderDash: [5, 5],
+              showLine: true,
+              pointRadius: 0,
+              order: 2,
+              plugins: { legend: { display: false } }
             },
             {
               label: 'Paciente Atual',
@@ -568,7 +593,10 @@
               labels: {
                 boxWidth: 12,
                 color: '#334155',
-                font: { size: 11, weight: '500' }
+                font: { size: 11, weight: '500' },
+                filter: function(item, chartData) {
+                  return !chartData.datasets[item.datasetIndex].plugins?.legend?.hasOwnProperty('display');
+                }
               }
             }
           },
