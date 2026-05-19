@@ -3,43 +3,73 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Calculadora Hemodinâmica Avançada</title>
+  <title>HEMOCALC - Calculadora Hemodinâmica Avançada</title>
   
   <link rel="icon" href="icon.png" type="image/png">
   <link rel="apple-touch-icon" href="icon.png">
   <link rel="manifest" href="manifest.json">
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <style>
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      max-width: 900px;
-      margin: 20px auto;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      max-width: 950px;
+      margin: 0 auto;
       padding: 20px;
-      background: #f1f5f9;
-      color: #1e293b;
+      background: #f8fafc;
+      color: #0f172a;
+    }
+    .header-logo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 25px;
+      padding: 10px 0;
+    }
+    .header-logo img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      box-shadow: 0 4px 10px rgba(30, 58, 138, 0.15);
+      object-fit: cover;
     }
     h1 {
       text-align: center;
       color: #1e3a8a;
-      margin-bottom: 5px;
-      font-size: 24px;
+      margin: 0;
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
     }
     p.subtitle {
       text-align: center;
       color: #64748b;
-      margin-bottom: 25px;
+      margin: 4px 0 0 0;
       font-size: 14px;
     }
     .container {
       background: white;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+    }
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1e3a8a;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-left: 4px solid #1e3a8a;
+      padding-left: 8px;
     }
     .grid-inputs {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 15px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
     }
     .input-group {
       display: flex;
@@ -49,114 +79,153 @@
       font-weight: 600;
       margin-bottom: 6px;
       color: #334155;
-      font-size: 14px;
+      font-size: 13.5px;
     }
     input {
-      padding: 10px 12px;
+      padding: 11px 14px;
       border: 1px solid #cbd5e1;
-      border-radius: 6px;
+      border-radius: 8px;
       font-size: 16px;
       background-color: #fff;
-      transition: border-color 0.2s;
+      color: #0f172a;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
     input:focus {
       outline: none;
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      border-color: #1e40af;
+      box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
     }
     button {
-      background: #1e40af;
+      background: #1e3a8a;
       color: white;
       font-size: 16px;
-      font-weight: bold;
-      padding: 12px;
+      font-weight: 700;
+      padding: 14px;
       width: 100%;
       border: none;
-      border-radius: 6px;
-      margin-top: 25px;
+      border-radius: 8px;
+      margin-top: 30px;
       cursor: pointer;
-      transition: background 0.2s;
+      box-shadow: 0 4px 6px -1px rgba(30, 58, 138, 0.2);
+      transition: background 0.2s, transform 0.1s;
     }
     button:hover {
       background: #1d4ed8;
     }
     button:active {
       background: #1e3a8a;
+      transform: scale(0.99);
     }
     .resultado {
-      background: #f8fafc;
-      padding: 20px;
-      border-radius: 8px;
-      margin-top: 25px;
-      border: 1px solid #e2e8f0;
+      background: #ffffff;
+      padding: 5px 0 0 0;
+      margin-top: 30px;
       display: none;
     }
     .resultado h2 {
       color: #1e3a8a;
       margin-top: 0;
       font-size: 20px;
-      border-bottom: 2px solid #e2e8f0;
-      padding-bottom: 10px;
+      font-weight: 700;
+      border-bottom: 2px solid #f1f5f9;
+      padding-bottom: 12px;
+      margin-bottom: 20px;
     }
     .metrics-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
-      margin-bottom: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 16px;
+      margin-bottom: 25px;
     }
     .metric-card {
-      background: white;
-      padding: 12px;
-      border-radius: 6px;
+      background: #f8fafc;
+      padding: 16px;
+      border-radius: 10px;
       border: 1px solid #e2e8f0;
+      transition: y 0.2s;
     }
-    .metric-card p {
-      margin: 4px 0;
+    .metric-card strong {
+      color: #0f172a;
+      font-size: 14px;
+      display: block;
+      margin-bottom: 4px;
+    }
+    .metric-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1e3a8a;
+    }
+    .metric-ref {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 4px;
+      display: block;
+    }
+    .chart-container {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 25px;
     }
     .analise-box {
       background: #f0fdf4;
       border-left: 4px solid #16a34a;
-      padding: 15px;
-      border-radius: 4px;
+      padding: 18px;
+      border-radius: 8px;
       line-height: 1.6;
+      margin-bottom: 20px;
     }
     .analise-box.has-warning {
       background: #fffbec;
       border-left: 4px solid #d97706;
     }
     .analise-title {
-      font-weight: bold;
-      font-size: 16px;
+      font-weight: 700;
+      font-size: 15px;
       color: #1e293b;
       margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
     .algoritmo-box {
       background: #eff6ff;
       border-left: 4px solid #2563eb;
-      padding: 15px;
-      border-radius: 4px;
-      margin-top: 15px;
+      padding: 18px;
+      border-radius: 8px;
       line-height: 1.6;
     }
     .algoritmo-title {
-      font-weight: bold;
+      font-weight: 700;
       color: #1e40af;
-      margin-bottom: 10px;
-      font-size: 16px;
+      margin-bottom: 12px;
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
     hr {
       border: 0;
       border-top: 1px solid #e2e8f0;
-      margin: 15px 0;
+      margin: 25px 0;
     }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <h1>Calculadora Hemodinâmica Avançada</h1>
-    <p class="subtitle">Insira apenas os dados disponíveis. Campos vazios não serão incluídos na análise ou cálculos.</p>
+    <div class="header-logo">
+      <img src="icon.png" alt="Logotipo HEMOCALC">
+      <div>
+        <h1>HEMOCALC</h1>
+        <p class="subtitle">Calculadora Hemodinâmica Avançada</p>
+      </div>
+    </div>
+    
+    <p style="text-align: center; color: #64748b; font-size: 13.5px; margin-top: -15px; margin-bottom: 25px;">
+      Insira apenas os dados disponíveis. Campos vazios serão desconsiderados na análise gráfica e metabólica.
+    </p>
 
+    <div class="section-title">Parâmetros Clínicos de Entrada</div>
     <div class="grid-inputs">
       <div class="input-group">
         <label for="bsa">BSA (Sup. Corpórea - m²):</label>
@@ -214,33 +283,33 @@
       </div>
     </div>
 
-    <button id="btnCalcular">Calcular Parâmetros</button>
+    <button id="btnCalcular">Processar Variáveis Hemodinâmicas</button>
 
     <div class="resultado" id="resultado"></div>
 
-    <!-- Bloco de Referências Clínicas e Científicas -->
     <hr style="margin-top: 40px; border-top: 1px dashed #cbd5e1;">
-    <div style="margin-top: 20px; padding: 15px; background: #f8fafc; border-radius: 8px; font-size: 13px; color: #64748b; line-height: 1.6;">
-      <strong style="color: #475569; display: block; margin-bottom: 8px; font-size: 14px;">📚 Referências Clínicas e Científicas:</strong>
+    <div style="margin-top: 20px; padding: 18px; background: #f8fafc; border-radius: 12px; font-size: 13px; color: #64748b; line-height: 1.6; border: 1px solid #e2e8f0;">
+      <strong style="color: #334155; display: block; margin-bottom: 8px; font-size: 14px;">📚 Referências Clínicas e Científicas:</strong>
       <ul style="margin: 0; padding-left: 20px;">
         <li><strong>Algoritmo de Abordagem Tecidual:</strong> Adaptado do protocolo clínico do estudo <em>LACTEL</em> (Ospina-Tascón, GA, et al.), utilizando os limiares consagrados de &Delta;PCO&sub2; (6 mmHg) e da relação metabólica &Delta;PCO&sub2; / C(a-v)O&sub2; (1.4) para triagem de hipoxia tecidual oculta em estados de choque de qualquer etiologia.</li>
         <li><strong>Variáveis de Fluxo e Microcirculação:</strong> Monnet X, Teboul JL. <em>CO2-derived variables for hemodynamic management in critically ill patients</em>. Annals of Intensive Care.</li>
-        <li><strong>Cálculos de Oferta e Demanda (DO&sub2; / VO&sub2;):</strong> Equações clássicas da fisiologia cardiovascular fundamentadas no Princípio de Fick e na estimativa do conteúdo de oxigênio ligado à hemoglobina.</li>
+        <li><strong>Cálculos de Oferta e Demanda (DO₂ / VO₂):</strong> Equações clássicas da fisiologia cardiovascular fundamentadas no Princípio de Fick e na estimativa do conteúdo de oxigênio ligado à hemoglobina.</li>
       </ul>
     </div>
 
-    <!-- Bloco de Créditos dos Criadores e Contato -->
-    <div style="margin-top: 15px; padding: 12px 15px; background: #f1f5f9; border-radius: 8px; font-size: 12px; color: #475569; text-align: center; border: 1px solid #e2e8f0; line-height: 1.5;">
-      <p style="margin: 0 0 6px 0;"><strong>Criadores:</strong> Gustavo Pinheiro Santana e Osvaldemar Regis do Nascimento Júnior</p>
+    <div style="margin-top: 15px; padding: 15px; background: #f1f5f9; border-radius: 12px; font-size: 12px; color: #475569; text-align: center; border: 1px solid #e2e8f0; line-height: 1.6;">
+      <p style="margin: 0 0 6px 0; font-weight: 600;">Criadores: Gustavo Pinheiro Santana e Osvaldemar Regis do Nascimento Júnior</p>
       <p style="margin: 0;">
-        <strong>Contato:</strong> <a href="mailto:gustavosantangm@gmail.com" style="color: #1e40af; text-decoration: none; font-weight: 500;">gustavosantangm@gmail.com</a> 
+        <strong>Contato:</strong> <a href="mailto:gustavosantangm@gmail.com" style="color: #1e3a8a; text-decoration: none; font-weight: 700;">gustavosantangm@gmail.com</a> 
         <span style="color: #cbd5e1; margin: 0 8px;">|</span> 
-        <a href="https://drgustavosantana.com.br" target="_blank" style="color: #1e40af; text-decoration: none; font-weight: 500;">drgustavosantana.com.br</a>
+        <a href="https://drgustavosantana.com.br" target="_blank" style="color: #1e3a8a; text-decoration: none; font-weight: 700;">drgustavosantana.com.br</a>
       </p>
     </div>
   </div>
 
   <script>
+    let chartInstance = null;
+
     function calcular() {
       const bsa     = parseFloat(document.getElementById('bsa').value);
       const pao2    = parseFloat(document.getElementById('pao2').value);
@@ -258,6 +327,8 @@
       const svo2 = !isNaN(svo2Input) ? svo2Input / 100 : NaN;
 
       let cao2 = NaN, cvo2 = NaN, do2 = NaN, vo2 = NaN, o2er = NaN;
+      let do2i = NaN, vo2i = NaN;
+
       if (!isNaN(hb) && !isNaN(sao2) && !isNaN(pao2)) {
         cao2 = (1.34 * hb * sao2) + (0.0031 * pao2);
       }
@@ -266,9 +337,11 @@
       }
       if (!isNaN(cao2) && !isNaN(co)) {
         do2 = cao2 * co * 10;
+        if (!isNaN(bsa) && bsa > 0) do2i = do2 / bsa;
       }
       if (!isNaN(cao2) && !isNaN(cvo2) && !isNaN(co)) {
         vo2 = (cao2 - cvo2) * co * 10;
+        if (!isNaN(bsa) && bsa > 0) vo2i = vo2 / bsa;
       }
       if (!isNaN(cao2) && !isNaN(cvo2) && cao2 > 0) {
         o2er = ((cao2 - cvo2) / cao2) * 100;
@@ -294,40 +367,53 @@
       let temDadosCalculados = false;
 
       if (!isNaN(do2)) {
-        htmlResultados += `<div class="metric-card"><strong>DO₂:</strong> ${do2.toFixed(0)} mL/min <span style="font-size:12px; color:#64748b;"><br>(Ref: 900-1100)</span></div>`;
+        htmlResultados += `<div class="metric-card"><strong>DO₂ Global:</strong> <span class="metric-value">${do2.toFixed(0)}</span> <span style="font-size:12px; color:#475569;">mL/min</span><span class="metric-ref">Ref: 900 - 1100 mL/min</span></div>`;
         temDadosCalculados = true;
       }
       if (!isNaN(vo2)) {
-        htmlResultados += `<div class="metric-card"><strong>VO₂:</strong> ${vo2.toFixed(0)} mL/min <span style="font-size:12px; color:#64748b;"><br>(Ref: 200-290)</span></div>`;
+        htmlResultados += `<div class="metric-card"><strong>VO₂ Global:</strong> <span class="metric-value">${vo2.toFixed(0)}</span> <span style="font-size:12px; color:#475569;">mL/min</span><span class="metric-ref">Ref: 200 - 290 mL/min</span></div>`;
         temDadosCalculados = true;
       }
       if (!isNaN(o2er)) {
-        htmlResultados += `<div class="metric-card"><strong>O₂ER (Extração):</strong> ${o2er.toFixed(1)}% <span style="font-size:12px; color:#64748b;"><br>(Ref: 20-30%)</span></div>`;
+        htmlResultados += `<div class="metric-card"><strong>O₂ER (Taxa Extração):</strong> <span class="metric-value">${o2er.toFixed(1)}%</span><span class="metric-ref">Ref: 20.0% - 30.0%</span></div>`;
         temDadosCalculados = true;
       }
       if (!isNaN(ci)) {
-        htmlResultados += `<div class="metric-card"><strong>Índice Cardíaco (CI):</strong> ${ci.toFixed(2)} L/min/m² <span style="font-size:12px; color:#64748b;"><br>(Ref: 2.5-4.0)</span></div>`;
+        htmlResultados += `<div class="metric-card"><strong>Índice Cardíaco (CI):</strong> <span class="metric-value">${ci.toFixed(2)}</span> <span style="font-size:12px; color:#475569;">L/min/m²</span><span class="metric-ref">Ref: 2.50 - 4.00 L/min/m²</span></div>`;
         temDadosCalculados = true;
       }
       if (!isNaN(svri)) {
-        htmlResultados += `<div class="metric-card"><strong>SVRI:</strong> ${svri.toFixed(0)} dyn·s·cm⁻⁵·m² <span style="font-size:12px; color:#64748b;"><br>(Ref: 1600-2400)</span></div>`;
+        htmlResultados += `<div class="metric-card"><strong>SVRI:</strong> <span class="metric-value">${svri.toFixed(0)}</span> <span style="font-size:11px; color:#475569;">dyn·s·cm⁻⁵·m²</span><span class="metric-ref">Ref: 1600 - 2400 dyn·s·cm⁻⁵·m²</span></div>`;
         temDadosCalculados = true;
       }
       if (!isNaN(rq)) {
-        htmlResultados += `<div class="metric-card"><strong>Relação ΔPCO₂/C(a-v)O₂:</strong> ${rq.toFixed(2)} <span style="font-size:12px; color:#64748b;"><br>(Ref: &lt; 1.4)</span></div>`;
+        htmlResultados += `<div class="metric-card"><strong>Quociente Respiratório (QR):</strong> <span class="metric-value">${rq.toFixed(2)}</span><span style="font-size:11px; color:#64748b; display:block; margin-top:2px;">ΔPCO₂ / C(a-v)O₂</span><span class="metric-ref">Ref: &lt; 1.40</span></div>`;
         temDadosCalculados = true;
       }
       if (!isNaN(lactato)) {
-        htmlResultados += `<div class="metric-card"><strong>Lactato Sérico:</strong> ${lactato.toFixed(1)} mmol/L <span style="font-size:12px; color:#64748b;"><br>(Ref: &lt; 2.0)</span></div>`;
+        htmlResultados += `<div class="metric-card"><strong>Lactato Sérico:</strong> <span class="metric-value">${lactato.toFixed(1)}</span> <span style="font-size:12px; color:#475569;">mmol/L</span><span class="metric-ref">Ref: &lt; 2.0 mmol/L</span></div>`;
         temDadosCalculados = true;
       }
 
       htmlResultados += `</div>`;
 
       if (!temDadosCalculados && isNaN(lactato)) {
-        document.getElementById('resultado').innerHTML = "<p style='color:#ef4444;'>Por favor, insira dados suficientes para gerar os cálculos de parâmetros.</p>";
+        document.getElementById('resultado').innerHTML = "<p style='color:#ef4444; font-weight:600; text-align:center;'>Por favor, insira dados suficientes para gerar os cálculos de parâmetros.</p>";
         document.getElementById('resultado').style.display = "block";
         return;
+      }
+
+      // Injeta o container do gráfico se DO2i e VO2i forem calculados
+      let chartHtml = "";
+      if (!isNaN(do2i) && !isNaN(vo2i)) {
+        chartHtml = `
+          <div class="chart-container">
+            <h3 style="color: #1e3a8a; font-size: 15px; margin-top:0; margin-bottom:15px; text-align:center; font-weight:700; uppercase; letter-spacing:0.5px;">Gráfico de Dispersão Fisiológica DO₂i vs VO₂i</h3>
+            <div style="position: relative; width: 100%; max-height: 320px; margin: 0 auto;">
+              <canvas id="do2vo2Chart"></canvas>
+            </div>
+          </div>
+        `;
       }
 
       let analiseHtml = "";
@@ -407,7 +493,7 @@
       
       document.getElementById('resultado').innerHTML = `
         ${htmlResultados}
-        <hr>
+        ${chartHtml}
         <div class="analise-box ${warningClass}">
           <div class="analise-title">📋 Análise de Parâmetros</div>
           ${analiseHtml || "Valores inseridos sem disparos de alarmes ou dados insuficientes para triagem completa."}
@@ -415,6 +501,92 @@
         ${algoritmoHtml}
       `;
       document.getElementById('resultado').style.display = "block";
+
+      // Constrói o gráfico se os dados indexados existirem
+      if (!isNaN(do2i) && !isNaN(vo2i)) {
+        renderizarGraficoDo2Vo2(do2i, vo2i);
+      }
+    }
+
+    function renderizarGraficoDo2Vo2(do2i, vo2i) {
+      if (chartInstance !== null) {
+        chartInstance.destroy();
+      }
+
+      const ctx = document.getElementById('do2vo2Chart').getContext('2d');
+      const do2Critico = 330; // Limiar clássico da inflexão fisiológica (ml/min/m²)
+      const vo2Plato = 130;   // Consumo basal médio no platô (ml/min/m²)
+
+      chartInstance = new Chart(ctx, {
+        type: 'scatter',
+        data: {
+          datasets: [
+            {
+              label: 'Fase Dependente (Patológica)',
+              type: 'line',
+              data: [{ x: 0, y: 0 }, { x: do2Critico, y: vo2Plato }],
+              borderColor: '#1e3a8a',
+              borderWidth: 3,
+              showLine: true,
+              pointRadius: 0,
+              order: 2
+            },
+            {
+              label: 'Fase Independente (Platô)',
+              type: 'line',
+              data: [{ x: do2Critico, y: vo2Plato }, { x: 800, y: vo2Plato }],
+              borderColor: '#1e3a8a',
+              borderWidth: 3,
+              showLine: true,
+              pointRadius: 0,
+              order: 2
+            },
+            {
+              label: 'Paciente Atual',
+              data: [{ x: do2i, y: vo2i }],
+              backgroundColor: '#ef4444',
+              pointRadius: 7,
+              pointHoverRadius: 9,
+              borderColor: 'rgba(239, 68, 68, 0.4)',
+              borderWidth: 6, // Efeito sutil de brilho/alvo ao redor do ponto vermelho
+              showLine: false,
+              order: 1
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: {
+                boxWidth: 12,
+                color: '#334155',
+                font: { size: 11, weight: '500' }
+              }
+            }
+          },
+          scales: {
+            x: {
+              type: 'linear',
+              position: 'bottom',
+              min: 0,
+              max: 800,
+              title: { display: true, text: 'DO₂i (Oferta de O₂ Indexada - mL/min/m²)', color: '#1e293b', font: { size: 11, weight: '700' } },
+              grid: { color: '#f1f5f9' },
+              ticks: { color: '#64748b', font: { size: 10 } }
+            },
+            y: {
+              min: 0,
+              max: 250,
+              title: { display: true, text: 'VO₂i (Consumo de O₂ Indexado - mL/min/m²)', color: '#1e293b', font: { size: 11, weight: '700' } },
+              grid: { color: '#f1f5f9' },
+              ticks: { color: '#64748b', font: { size: 10 } }
+            }
+          }
+        }
+      });
     }
 
     document.getElementById('btnCalcular').addEventListener('click', calcular);
